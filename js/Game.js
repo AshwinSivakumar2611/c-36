@@ -6,7 +6,7 @@ class Game {
     gameStateRef.on("value",function(data){
        gameState = data.val();
     })
-   
+    
   }
 
   update(state){
@@ -15,12 +15,35 @@ class Game {
     });
   }
 
-  start(){
+  async start(){
     if(gameState === 0){
       player = new Player();
-      player.getCount();
+      var playerCountRef=await database.ref('playerCount').once("value");
+      if (playerCountRef.exist()){
+        playerCount=playerCountRef.val();
+        player.getCount();
+      }
       form = new Form()
       form.display();
     }
+  }
+
+  play(){
+    form.hide();
+    textSize(30);
+    text("GAME START",120,100);
+    Player.getPlayerInfo();
+    if (allPlayer!==undefined){
+      var display_Position = 130;
+      display_Position += 20;
+      textSize(15);
+      text(allPlayer[plr].name+":"+allPlayer[plr].distance,120,display_Position);
+    }
+    
+  }
+
+  if (KeyIsDown(UP_ARROW) && player.index!==null){
+    player.distance += 50;
+    player.update();
   }
 }
